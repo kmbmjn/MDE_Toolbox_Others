@@ -1,10 +1,10 @@
 # optimizer
 max_lr=1e-4
 ### original
-optimizer = dict(type='AdamW', lr=max_lr, betas=(0.95, 0.99), weight_decay=0.01,)
+### optimizer = dict(type='AdamW', lr=max_lr, betas=(0.95, 0.99), weight_decay=0.01,)
 ###
 ### my
-### optimizer = dict(type='AdamW', lr=max_lr, betas=(0.9, 0.999), weight_decay=0.01,)
+optimizer = dict(type='AdamW', lr=max_lr, betas=(0.95, 0.99), weight_decay=3e-3,)
 ###
 # learning policy
 lr_config = dict(
@@ -14,7 +14,8 @@ lr_config = dict(
     final_div_factor=100,
     by_epoch=False,
 )
-optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
+### optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
+optimizer_config = dict(grad_clip=dict(max_norm=3, norm_type=2))
 # runtime settings
 runner = dict(type='EpochBasedRunner', max_epochs=24)
 checkpoint_config = dict(by_epoch=True, max_keep_ckpts=2, interval=1)

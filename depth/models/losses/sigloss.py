@@ -29,7 +29,15 @@ class SigLoss(nn.Module):
         self.loss_weight = loss_weight
         self.max_depth = max_depth
 
+        ### original
         self.eps = 0.001 # avoid grad explode
+        ###
+
+        ### my
+        ### self.eps = 0.01 # avoid grad explode
+        ### self.eps = 0.0001 # avoid grad explode
+        ### self.eps = 0.0
+        ###
 
         # HACK: a hack implementation for warmup sigloss
         self.warm_up = warm_up
@@ -52,7 +60,12 @@ class SigLoss(nn.Module):
                 return torch.sqrt(g)
 
         g = torch.log(input + self.eps) - torch.log(target + self.eps)
-        Dg = torch.var(g) + 0.15 * torch.pow(torch.mean(g), 2)
+        ### original
+        ### Dg = torch.var(g) + 0.15 * torch.pow(torch.mean(g), 2)
+        ###
+        ### my
+        Dg = torch.var(g, unbiased=False) + 0.15 * torch.pow(torch.mean(g), 2)
+        ###
         return torch.sqrt(Dg)
 
     def forward(self, depth_pred, depth_gt):

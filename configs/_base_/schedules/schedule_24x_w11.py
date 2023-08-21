@@ -1,10 +1,10 @@
 # optimizer
 max_lr=1e-4
 ### original
-optimizer = dict(type='AdamW', lr=max_lr, betas=(0.95, 0.99), weight_decay=0.01,)
+### optimizer = dict(type='AdamW', lr=max_lr, betas=(0.95, 0.99), weight_decay=0.01,)
 ###
 ### my
-### optimizer = dict(type='AdamW', lr=max_lr, betas=(0.9, 0.999), weight_decay=0.01,)
+optimizer = dict(type='AdamW', lr=max_lr, betas=(0.95, 0.99), weight_decay=1e-1,)
 ###
 # learning policy
 lr_config = dict(

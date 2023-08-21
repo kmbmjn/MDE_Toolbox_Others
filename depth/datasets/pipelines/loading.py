@@ -21,7 +21,11 @@ class LoadKITTICamIntrinsic(object):
         """
 
         # raw input
-        if 'input' in  results['img_prefix']:
+        ### my ddad
+        if 'input_image' in  results['img_prefix']:
+            results['cam_intrinsic'] = [[2.18153025e+03, 0.00000000e+00, 9.28021882e+02, None], [0.00000000e+00, 2.18160345e+03, 6.15956788e+02, None], [0.00000000e+00, 0.00000000e+00, 1.00000000e+00, None]]
+            # [[2.18153025e+03 0.00000000e+00 9.28021882e+02, 0.], [0.00000000e+00 2.18160345e+03 6.15956788e+02, 0.],   [0.00000000e+00 0.00000000e+00 1.00000000e+00, 0.]]
+        elif 'input' in  results['img_prefix']:
             date = results['filename'].split('/')[-5]
             results['cam_intrinsic'] = results['cam_intrinsic_dict'][date]
         # benchmark test
