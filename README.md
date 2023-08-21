@@ -1,3 +1,27 @@
+우선 이미지 크기가 달라질 때의 사이즈(코드 상에서 kb crop size, img_scale 등) 수정이 필요합니다.
+그리고 그 외에는 이미지와 라벨 각각의 폴더명, split을 정의하는 txt 파일, max_depth 값 등의 수정이 필요합니다.
+저는 총 5곳에서 수정을 진행했습니다.
+
+depth/datasets/ddad.py
+depth/datasets/__init__.py
+depth/datasets/pipelines/loading.py
+configs/bts/bts_r50_ddad_24e.py
+configs/_*base_*/datasets/ddad.py
+
+그 외에도, 사실 Toolbox 자체에서 오류가 하나 있습니다.
+depth/models/losses/sigloss.py
+Dg = torch.var(g) + 0.15 * torch.pow(torch.mean(g), 2)
+Dg = torch.var(g, unbiased=False) + 0.15 * torch.pow(torch.mean(g), 2)
+
+PyTorch에서는 var()의 디폴트 옵션이 unbiased=True인데요, 이 부분은 명시적으로 False로 지정하는 것이 수식적으로 올바릅니다. 이 부분은 KITTI에서는 딱히 차이가 없지만, DDAD 등의 다른 데이터셋에서는 학습의 안정성에서 큰 문제가 됨을 확인했습니다. 이건 제 생각인데요, random crop하면서 학습하니까 valid point 개수 N이 작아지는 케이스가 발생될 때 N으로 나눠주는 var() 함수에서 문제가 생기는 것 같습니다.
+
+학습은 이렇게 진행할 수 있습니다.
+sh tools/dist_train.sh configs/depthformer/depthformer_swinl_22k_w7_ddad.py 4 --work-dir work_dirs/depthformer_swinl_22k_w7_ddad_n2
+
+
+
+
+
 # Monocular-Depth-Estimation-Toolbox
 ## Introduction
 
