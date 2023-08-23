@@ -62,12 +62,14 @@ PyTorch에서는 var()의 디폴트 옵션이 unbiased=True인데요, 이 부분
 sh tools/dist_train.sh configs/depthformer/depthformer_swinl_22k_w7_ddad.py 4 --work-dir work_dirs/depthformer_swinl_22k_w7_ddad_n2
 ```
 
-## fine-tuning
+## Fine-tuning
 checkpoint 파일을 갖고 있을 때, 이에 대한 fine-tuning을 수행하고자 하는 경우 아래와 같이 --load-from에 checkpoint 파일의 경로를 지정하여 수행할 수 있습니다.
 
 ```
 sh tools/dist_train.sh configs/depthformer/depthformer_swinl_22k_w7_kitti.py 4 --work-dir work_dirs/depthformer_swinl_22k_w7_drst_kitti_n23 --load-from work_dirs/save/depthformer_swinl_22k_w7_drst_n25/latest.pth
 ```
+
+## 아래는 Toolbox의 original readme입니다.
 
 
 
