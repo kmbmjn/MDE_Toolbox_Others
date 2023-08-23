@@ -1,9 +1,11 @@
 # DDAD/Arogverse/DrivingStereo 데이터셋 학습 셋업
 
 ## config 파일 수정
-먼저 이미지 크기가 달라질 때의 사이즈(코드 상에서 kb crop size, img_scale 등) 수정이 필요합니다.
+KITTI 외에 DDAD, Argovserse, DrivingStereo와 같은 데이터셋으로 학습하고자 하는 경우, 각각의 데이터셋을 정의하는 config 파일을 작성해야 합니다.
 
-그 외에는 이미지와 라벨 각각의 폴더명, split을 정의하는 txt 파일, max_depth 값 등의 수정이 필요합니다.
+특히 데이터셋이 다를 때에는 이미지 크기가 다르므로, 코드 상에서 사이즈를 다루는 값들(코드 상에서 kb crop size, img_scale 등) 수정이 필요합니다.
+
+그 외에는 이미지와 라벨 파일을 정리한 각각에 대한 폴더명, split을 정의하는 txt 파일, max_depth 값 등의 수정이 필요합니다.
 
 저는 총 5곳에서 수정을 진행했습니다.
 
@@ -15,7 +17,7 @@ configs/bts/bts_r50_ddad_24e.py
 configs/_base_/datasets/ddad.py
 ```
 
-그 외에도, 사실 Toolbox 자체에서 오류가 하나 있습니다.
+그 외에도, 사실 Toolbox 원본 코드 자체에서 오류가 하나 있습니다.
 
 ```
 depth/models/losses/sigloss.py
@@ -23,7 +25,7 @@ Dg = torch.var(g) + 0.15 * torch.pow(torch.mean(g), 2)
 Dg = torch.var(g, unbiased=False) + 0.15 * torch.pow(torch.mean(g), 2)
 ```
 
-PyTorch에서는 var()의 디폴트 옵션이 unbiased=True인데요, 이 부분은 명시적으로 False로 지정하는 것이 수식적으로 올바릅니다. 이 부분은 KITTI에서는 딱히 차이가 없지만, DDAD 등의 다른 데이터셋에서는 학습의 안정성에서 큰 문제가 됨을 확인했습니다. 이건 제 생각인데요, random crop하면서 학습하니까 valid point 개수 N이 작아지는 케이스가 발생될 때 N으로 나눠주는 var() 함수에서 문제가 생기는 것 같습니다.
+PyTorch에서는 var()의 디폴트 옵션이 unbiased=True인데요, 이 부분은 명시적으로 False로 지정하는 것이 수식적으로 올바릅니다. 이 부분은 KITTI에서는 딱히 차이가 없지만, DDAD 등의 다른 데이터셋에서는 학습의 안정성에서 큰 문제가 됨을 확인했습니다. 이건 제 생각인데요, random crop하면서 학습하니까 valid point 개수 N이 작아지는 케이스가 발생될 때 N으로 나눠주는 var() 함수에서 불안정성이 생기는 것 같습니다.
 
 ## 데이터셋 준비
 ```
@@ -60,7 +62,12 @@ PyTorch에서는 var()의 디폴트 옵션이 unbiased=True인데요, 이 부분
 sh tools/dist_train.sh configs/depthformer/depthformer_swinl_22k_w7_ddad.py 4 --work-dir work_dirs/depthformer_swinl_22k_w7_ddad_n2
 ```
 
+## fine-tuning
+checkpoint 파일을 갖고 있을 때, 이에 대한 fine-tuning을 수행하고자 하는 경우 아래와 같이 --load-from에 checkpoint 파일의 경로를 지정하여 수행할 수 있습니다.
 
+```
+sh tools/dist_train.sh configs/depthformer/depthformer_swinl_22k_w7_kitti.py 4 --work-dir work_dirs/depthformer_swinl_22k_w7_drst_kitti_n23 --load-from work_dirs/save/depthformer_swinl_22k_w7_drst_n25/latest.pth
+```
 
 
 
